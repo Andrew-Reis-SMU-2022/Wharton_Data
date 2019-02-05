@@ -6,12 +6,6 @@ import pickle
 
 start = datetime.datetime.now()
 
-def find_index(list, num):
-    for i in range(len(list)):
-        if abs(num - list[i]) < 0.001:
-            return i
-    raise Exception('Yo that numbers not in the list')
-
 class Day:
     def __init__(self, date, open, close, high, low):
         self.date = date
@@ -133,39 +127,33 @@ for file in os.listdir('spy_daily_performance'):
                 weeks_list.append(current_week)
                 new_week = True
 
-def not_in(num, list):
-    for x in list:
-        if abs(num - x) < 0.001:
-            return False
-    return True
+# for file in os.listdir('option_price_data'):
+#     df_options = pd.read_csv(f'option_price_data/{file}')
+#     for i in range(1, len(df_options.index)):
+#         buy_date = datetime.date(int(df_options['date'][i].split('/')[0]), int(df_options['date'][i].split('/')[1]),
+#                                  int(df_options['date'][i].split('/')[2]))
+#         exp_date = datetime.date(int(df_options['exdate'][i].split('/')[0]),
+#                                  int(df_options['exdate'][i].split('/')[1]),
+#                                  int(df_options['exdate'][i].split('/')[2]))
+#         for week in weeks_list:
+#             for day in week.days_list:
+#                 if buy_date == day.date and (exp_date == week.days_list[-1].date or exp_date == week.days_list[-1].date + datetime.timedelta(days=1)):
+#                     print(exp_date)
+#                     if df_options['cp_flag'][i] == 'C' and not float(df_options['strike_price'][i])/ 1000 in day.call_option_chain['strike']:
+#                         if float(df_options['strike_price'][i]) / 1000 >= day.day_close and float(df_options['best_offer'][i]) >= .04:
+#                             day.call_option_chain['strike'].append(float(df_options['strike_price'][i]) / 1000)
+#                             day.call_option_chain['premium'].append(float(df_options['best_offer'][i]))
+#                     elif df_options['cp_flag'][i] == 'P' and not float(df_options['strike_price'][i])/ 1000 in day.put_option_chain['strike']:
+#                         if float(df_options['strike_price'][i]) / 1000 <= day.day_close and float(df_options['best_offer'][i]) >= .04:
+#                             day.put_option_chain['strike'].append(float(df_options['strike_price'][i]) /1000)
+#                             day.put_option_chain['premium'].append(float(df_options['best_offer'][i]))
+#
+# with open(f'pickle_data/{testing_years[0]} - {testing_years[-1]}.pickle', 'wb') as pickle_out:
+#     pickle.dump(weeks_list, pickle_out)
 
-for file in os.listdir('option_price_data'):
-    df_options = pd.read_csv(f'option_price_data/{file}')
-    for i in range(1, len(df_options.index)):
-        buy_date = datetime.date(int(df_options['date'][i].split('/')[0]), int(df_options['date'][i].split('/')[1]),
-                                 int(df_options['date'][i].split('/')[2]))
-        exp_date = datetime.date(int(df_options['exdate'][i].split('/')[0]),
-                                 int(df_options['exdate'][i].split('/')[1]),
-                                 int(df_options['exdate'][i].split('/')[2]))
-        for week in weeks_list:
-            for day in week.days_list:
-                if buy_date == day.date and (exp_date == week.days_list[-1].date or exp_date == week.days_list[-1].date + datetime.timedelta(days=1)):
-                    print(exp_date)
-                    if df_options['cp_flag'][i] == 'C' and not float(df_options['strike_price'][i])/ 1000 in day.call_option_chain['strike']:
-                        if float(df_options['strike_price'][i]) / 1000 >= day.day_close and float(df_options['best_offer'][i]) >= .04:
-                            day.call_option_chain['strike'].append(float(df_options['strike_price'][i]) / 1000)
-                            day.call_option_chain['premium'].append(float(df_options['best_offer'][i]))
-                    elif df_options['cp_flag'][i] == 'P' and not float(df_options['strike_price'][i])/ 1000 in day.put_option_chain['strike']:
-                        if float(df_options['strike_price'][i]) / 1000 <= day.day_close and float(df_options['best_offer'][i]) >= .04:
-                            day.put_option_chain['strike'].append(float(df_options['strike_price'][i]) /1000)
-                            day.put_option_chain['premium'].append(float(df_options['best_offer'][i]))
-
-with open(f'pickle_data/{testing_years[0]} - {testing_years[-1]}.pickle', 'wb') as pickle_out:
-    pickle.dump(weeks_list, pickle_out)
-
-# weeks_list = []
-# with open(f'pickle_data/{testing_years[0]} - {testing_years[-1]}.pickle', 'rb') as pickle_in:
-#     weeks_list = pickle.load(pickle_in)
+weeks_list = []
+with open(f'pickle_data/{testing_years[0]} - {testing_years[-1]}.pickle', 'rb') as pickle_in:
+    weeks_list = pickle.load(pickle_in)
 
 for week in weeks_list:
     for day in week.days_list:
